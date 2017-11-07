@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -19,15 +18,16 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
-    MealDao dao = new MealDaoImplInMemory();
-    String INSERT_OR_EDIT = "/addOrEdit.jsp";
-    String LIST_MEALS = "/meals.jsp";
-    String forward;
+    private MealDao dao = new MealDaoImplInMemory();
+    private String LIST_MEALS = "/meals.jsp";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         String action = request.getParameter("action");
+
+        String forward;
+        String INSERT_OR_EDIT = "/addOrEdit.jsp";
 
         if (action.equalsIgnoreCase("delete")) {
             int userId = Integer.parseInt(request.getParameter("mealId"));
@@ -42,7 +42,7 @@ public class MealServlet extends HttpServlet {
             forward = INSERT_OR_EDIT;
             log.debug("insert or edit meal");
         } else if (action.equalsIgnoreCase("listMeals")) {
-            request.setAttribute("meals", dao.getAllMeals());
+            request.setAttribute("mealsList", dao.getAllMeals());
             forward = LIST_MEALS;
             log.debug("list meal");
         } else {
@@ -60,12 +60,14 @@ public class MealServlet extends HttpServlet {
         LocalDateTime localDateTime = LocalDateTime.parse(inputModified, formatter);
         String description = request.getParameter("description");
         Integer calories = Integer.parseInt(request.getParameter("calories"));
-        int id = dao.getCounter().get();
-        try {
-            id = Integer.parseInt(request.getParameter("mealId"));
-        } catch (Exception e) {
+        String mealid = request.getParameter("mealid");
+        if (mealid == null || mealid.isEmpty()) {
+            dao.add(new Meal(localDateTime, description, calories, dao.getCounter().get()));
+            log.debug("add meal");
+        } else {
+            dao.edit(new Meal(localDateTime, description, calories, Integer.parseInt(mealid)));
+            log.debug("edit meal");
         }
-        dao.edit(new Meal(localDateTime, description, calories, id));
         RequestDispatcher view = request.getRequestDispatcher(LIST_MEALS);
         request.setAttribute("mealsList", dao.getAllMeals());
         view.forward(request, response);

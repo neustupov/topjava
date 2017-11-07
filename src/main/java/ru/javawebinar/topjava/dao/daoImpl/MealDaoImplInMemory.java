@@ -4,8 +4,6 @@ import ru.javawebinar.topjava.dao.MealDao;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,27 +11,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MealDaoImplInMemory implements MealDao {
 
     private static List<Meal> ourInstance;
-    static AtomicInteger counter = new AtomicInteger(1);
-    static int CALORIES_PER_DAY = 2000;
+    private static AtomicInteger counter = new AtomicInteger(0);
 
-   /* static {
-        ourInstance.add(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак",500, 1));
-        incrementCounter();
-        ourInstance.add(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000, 2));
-        incrementCounter();
-        ourInstance.add(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500, 3));
-        incrementCounter();
-        ourInstance.add(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000, 4));
-        incrementCounter();
-        ourInstance.add(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500, 5));
-        incrementCounter();
-        ourInstance.add(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510, 6));
-        incrementCounter();
-    }*/
-
-    public static List<Meal> getInstance() {
+    private static List<Meal> getInstance() {
         if (ourInstance == null) {
-            return new CopyOnWriteArrayList<>();
+            ourInstance = new CopyOnWriteArrayList<>();
+            return ourInstance;
         }
         return ourInstance;
     }
@@ -60,22 +43,33 @@ public class MealDaoImplInMemory implements MealDao {
 
     @Override
     public void edit(Meal meal) {
-        getInstance().add(meal.getId(), meal);
+        for (Meal oneMeal : getInstance()) {
+            if (oneMeal.getId() == meal.getId()) {
+                getInstance().add(getInstance().indexOf(oneMeal), meal);
+                getInstance().remove(oneMeal);
+                decrementCounter();
+            }
+        }
     }
 
     @Override
     public void delete(int id) {
-        getInstance().remove(id);
-        decrementCounter();
+        getInstance().remove(getMeal(id));
     }
 
     @Override
     public Meal getMeal(int id) {
-        return getInstance().get(id);
+        Meal meal = null;
+        for (Meal oneMeal : getInstance()) {
+            if (oneMeal.getId() == id) {
+                meal = oneMeal;
+            }
+        }
+        return meal;
     }
 
     @Override
     public List getAllMeals() {
-        return MealsUtil.createWithExceedWithoutTime(getInstance(), CALORIES_PER_DAY);
+        return MealsUtil.createWithExceedWithoutTime(getInstance(), 2000);
     }
 }
