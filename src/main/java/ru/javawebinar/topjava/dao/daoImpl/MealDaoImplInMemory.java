@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MealDaoImplInMemory implements MealDao {
 
-    private static List<Meal> ourInstance = new CopyOnWriteArrayList<>();
+    private static List<Meal> ourInstance;
     static AtomicInteger counter = new AtomicInteger(1);
     static int CALORIES_PER_DAY = 2000;
 
@@ -32,17 +32,20 @@ public class MealDaoImplInMemory implements MealDao {
     }*/
 
     public static List<Meal> getInstance() {
+        if (ourInstance == null) {
+            return new CopyOnWriteArrayList<>();
+        }
         return ourInstance;
     }
 
     public MealDaoImplInMemory() {
     }
 
-    static void incrementCounter(){
+    static void incrementCounter() {
         counter.getAndIncrement();
     }
 
-    static void decrementCounter(){
+    static void decrementCounter() {
         counter.decrementAndGet();
     }
 

@@ -55,21 +55,17 @@ public class MealServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String inputModified = request.getParameter("localDateTime").replace ( "T"," " );
+        String inputModified = request.getParameter("localDateTime").replace("T", " ");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime localDateTime = LocalDateTime.parse(inputModified, formatter);
         String description = request.getParameter("description");
         Integer calories = Integer.parseInt(request.getParameter("calories"));
-        Integer id = 0;
-        if(request.getParameter("mealid")!= ""){id = Integer.parseInt(request.getParameter("mealid"));}
-        if(id == null)
-        {
-            dao.add(new Meal(localDateTime, description, calories, dao.getCounter().get()));
+        int id = dao.getCounter().get();
+        try {
+            id = Integer.parseInt(request.getParameter("mealId"));
+        } catch (Exception e) {
         }
-        else
-        {
-            dao.edit(new Meal(localDateTime, description, calories, id));
-        }
+        dao.edit(new Meal(localDateTime, description, calories, id));
         RequestDispatcher view = request.getRequestDispatcher(LIST_MEALS);
         request.setAttribute("mealsList", dao.getAllMeals());
         view.forward(request, response);
