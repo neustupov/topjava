@@ -35,6 +35,8 @@ public class MealServlet extends HttpServlet {
             request.setAttribute("meals", dao.getAllMeals());
             forward = LIST_MEALS;
             log.debug("delete meal id =" + userId);
+            response.sendRedirect(request.getContextPath()+"/meals?action=listMeals");
+            return;
         } else if (action.equalsIgnoreCase("edit")) {
             int mealId = Integer.parseInt(request.getParameter("mealId"));
             Meal meal = dao.getMeal(mealId);
