@@ -47,7 +47,6 @@ public class MealDaoImplInMemory implements MealDao {
             if (oneMeal.getId() == meal.getId()) {
                 getInstance().add(getInstance().indexOf(oneMeal), meal);
                 getInstance().remove(oneMeal);
-                decrementCounter();
             }
         }
     }

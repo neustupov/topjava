@@ -10,7 +10,7 @@
 <table border=1>
     <thead>
     <tr>
-        <td>Id</td>
+        <th>Id</th>
         <th>Discription</th>
         <th>Calories</th>
         <th>DateTime</th>
@@ -26,7 +26,7 @@
             <td><c:out value="${meal.id}"/></td>
             <td><c:out value="${meal.description}"/></td>
             <td><c:out value="${meal.calories}"/></td>
-            <td><javatime:format value="${meal.dateTime}" pattern="yyyy-MM-dd"/></td>
+            <td><javatime:format value="${meal.dateTime}" pattern="yyyy-MM-dd HH:mm"/></td>
             <td><a href="meals?action=edit&mealId=<c:out value="${meal.id}"/>">Update</a></td>
             <td><a href="meals?action=delete&mealId=<c:out value="${meal.id}"/>">Delete</a></td>
         </tr>
