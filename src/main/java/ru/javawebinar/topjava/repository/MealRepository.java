@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.repository;
 
+import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 
 import java.time.LocalDateTime;
@@ -9,7 +10,7 @@ public interface MealRepository {
     Meal save(Meal meal);
 
     // false if not found
-    void delete(int id);
+    boolean delete(int id);
 
     // null if not found
     Meal get(int id, int userId);

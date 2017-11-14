@@ -25,12 +25,13 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public boolean delete(int id) {
         log.info("delete {}", id);
-        repository.forEach(user -> {
+        for (User user : repository) {
             if (user.getId() == id) {
                 repository.remove(user);
+                return true;
             }
-        });
-        return true;
+        }
+        return false;
     }
 
     @Override
