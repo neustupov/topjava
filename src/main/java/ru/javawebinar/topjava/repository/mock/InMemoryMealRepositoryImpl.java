@@ -6,9 +6,11 @@ import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class InMemoryMealRepositoryImpl implements MealRepository {
     private Map<Integer, Meal> repository = new ConcurrentHashMap<>();
@@ -43,6 +45,10 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public Collection<Meal> getAll(int userId) {
+        Map<Integer, Meal> result = repository.entrySet().stream()
+                .sorted(Comparator.comparing(m -> m.getValue().getTime()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (m1, m2) -> m1,
+                        ConcurrentHashMap::new));
         return repository.values();
     }
 
