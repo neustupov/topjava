@@ -57,6 +57,10 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         switch (action == null ? "all" : action) {
+            case "setId":
+                int id = Integer.parseInt(request.getParameter("userId"));
+                AuthorizedUser.setId(id);
+                break;
             case "delete":
                 int id = getId(request);
                 log.info("Delete {}", id);
