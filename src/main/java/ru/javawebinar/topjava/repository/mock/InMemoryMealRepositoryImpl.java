@@ -59,12 +59,13 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public Collection<Meal> getAll(int userId) {
-        log.info("getAll");
-        Map<Integer, Meal> result = repository.entrySet().stream()
-                .sorted(Comparator.comparing(m -> m.getValue().getTime()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (m1, m2) -> m1,
-                        ConcurrentHashMap::new));
-        return result.values();
+        log.info("getAll - sort by Time");
+
+        return repository.values()
+                .stream()
+                .filter(x -> x.getUserId() == userId)
+                .sorted(Comparator.comparing(Meal::getDateTime))
+                .collect(Collectors.toList());
     }
 
     @Override
