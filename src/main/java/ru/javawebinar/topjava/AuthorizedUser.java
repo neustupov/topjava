@@ -10,11 +10,11 @@ public class AuthorizedUser {
         return DEFAULT_CALORIES_PER_DAY;
     }
 
-    public int getId() {
+    public static int getId() {
         return id;
     }
 
     public static void setId(int id) {
-        id = id;
+        AuthorizedUser.id = id;
     }
 }
