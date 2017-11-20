@@ -41,6 +41,7 @@ public class JdbcMealRepositoryImpl implements MealRepository {
     public Meal save(Meal meal, int userId) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("user_id", userId)
+                .addValue("id", meal.getId())
                 .addValue("datetime", meal.getDateTime())
                 .addValue("description", meal.getDescription())
                 .addValue("calories", meal.getCalories());
@@ -56,7 +57,7 @@ public class JdbcMealRepositoryImpl implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-        return jdbcTemplate.update("DELETE FROM meals WHERE id=?1 AND user_id=?2", id, userId) != 0;
+        return jdbcTemplate.update("DELETE FROM meals WHERE id=? AND user_id=?", id, userId) != 0;
     }
 
     @Override
@@ -67,13 +68,18 @@ public class JdbcMealRepositoryImpl implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=?", ROW_MAPPER, userId);
+        List<Meal> mealsList = jdbcTemplate.query("SELECT * FROM meals WHERE user_id=?", ROW_MAPPER, userId);
+        mealsList.sort(Comparator.comparing(Meal::getDateTime).reversed());
+        return mealsList;
     }
 
     @Override
     public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=?", ROW_MAPPER, userId)
-                .stream().filter(x -> (x.getDate().isAfter(startDate.toLocalDate()) && x.getDate().isBefore(endDate.toLocalDate())))
+        List<Meal> mealsList = jdbcTemplate.query("SELECT * FROM meals WHERE user_id=?", ROW_MAPPER, userId)
+                .stream().filter(x -> (x.getDate().isAfter(startDate.toLocalDate().minusDays(1)) && x.getDate()
+                        .isBefore(endDate.toLocalDate().plusDays(1))))
                 .collect(Collectors.toList());
+        mealsList.sort(Comparator.comparing(Meal::getDateTime).reversed());
+        return mealsList;
     }
 }
