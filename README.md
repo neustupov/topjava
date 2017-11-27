@@ -1,5 +1,9 @@
-Java Enterprise Online Project [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c2b6a36dcb5d48f4b74fa0d7788a5b7a)](https://www.codacy.com/app/neustupov/topjava?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=neustupov/topjava&amp;utm_campaign=Badge_Grade)
+Java Enterprise Online Project
 ===============================
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c2b6a36dcb5d48f4b74fa0d7788a5b7a)](https://www.codacy.com/app/neustupov/topjava?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=neustupov/topjava&amp;utm_campaign=Badge_Grade)
+
+[![Dependency Status](https://www.versioneye.com/user/projects/5a1bb1e50fb24f0beafc6c82/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/5a1bb1e50fb24f0beafc6c82)
+
 Разработка полнофункционального Spring/JPA Enterprise приложения c авторизацией и правами доступа на основе ролей с использованием наиболее популярных инструментов и технологий Java: Maven, Spring MVC, Security, JPA(Hibernate), REST(Jackson), Bootstrap (css,js), datatables, jQuery + plugins, Java 8 Stream and Time API и хранением в базах данных Postgresql и HSQLDB.
 
 ![topjava_structure](https://user-images.githubusercontent.com/13649199/27433714-8294e6fe-575e-11e7-9c41-7f6e16c5ebe5.jpg)
