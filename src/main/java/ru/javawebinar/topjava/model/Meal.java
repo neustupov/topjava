@@ -1,25 +1,36 @@
 package ru.javawebinar.topjava.model;
 
-import ru.javawebinar.topjava.util.LocalDateTimePersistenceConverter;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+@NamedQueries({
+        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.user.id =:userId AND m.id=:id"),
+        @NamedQuery(name = Meal.WITH_ID, query = "SELECT m FROM Meal m WHERE m.user=:userId AND m.id=:id"),
+        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m  ORDER BY m.dateTime DESC"),
+        @NamedQuery(name = Meal.BETWEEN, query = "SELECT m FROM Meal m WHERE m.user.id=:userId AND m.dateTime BETWEEN :startDate AND :endDate ORDER BY m.dateTime DESC")
+})
+
 @Entity
 @Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "datetime"}, name = "meals_unique_user_datetime_idx")})
 public class Meal extends AbstractBaseEntity {
 
+    public static final String DELETE = "Meal.delete";
+    public static final String WITH_ID = "Meal.getWithId";
+    public static final String ALL_SORTED = "Meal.getSorted";
+    public static final String BETWEEN = "Meal.getBetween";
+
     @Column(name = "datetime", nullable = false, unique = true)
-    @Convert(converter = LocalDateTimePersistenceConverter.class)
-    @NotNull
     private LocalDateTime dateTime;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
+    @NotNull
     private String description;
 
+    @Column(name = "calories", nullable = false)
+    @NotNull
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
