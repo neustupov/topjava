@@ -1,14 +1,23 @@
 package ru.javawebinar.topjava.model;
 
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import ru.javawebinar.topjava.util.LocalDateTimePersistenceConverter;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+@Entity
+@Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "datetime"}, name = "meals_unique_user_datetime_idx")})
 public class Meal extends AbstractBaseEntity {
+
+    @Column(name = "datetime", nullable = false, unique = true)
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
+    @NotNull
     private LocalDateTime dateTime;
 
+    @Column(name = "description")
     private String description;
 
     private int calories;
