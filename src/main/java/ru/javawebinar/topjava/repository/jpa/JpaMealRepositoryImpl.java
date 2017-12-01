@@ -1,6 +1,8 @@
 package ru.javawebinar.topjava.repository.jpa;
 
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.model.Meal;
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-@Transactional(readOnly = true)
+@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 public class JpaMealRepositoryImpl implements MealRepository {
 
     @PersistenceContext
@@ -28,6 +30,7 @@ public class JpaMealRepositoryImpl implements MealRepository {
             em.persist(meal);
             return meal;
         } else {
+            if(get(meal.getId(), userId) == null)return null;
             return em.merge(meal);
         }
     }
@@ -36,22 +39,24 @@ public class JpaMealRepositoryImpl implements MealRepository {
     @Transactional
     public boolean delete(int id, int userId) {
         return em.createNamedQuery(Meal.DELETE)
-                .setParameter("userId", AuthorizedUser.id())
+                .setParameter("userId", userId)
                 .setParameter("id", id)
                 .executeUpdate() != 0;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        return (Meal) em.createNamedQuery(Meal.WITH_ID)
+        List<Meal> userMeals = em.createNamedQuery(Meal.GET, Meal.class)
                 .setParameter("userId", userId)
                 .setParameter("id", id)
-                .getSingleResult();
+                .getResultList();
+        return userMeals.size() == 0 ? null : DataAccessUtils.requiredSingleResult(userMeals);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
         return em.createNamedQuery(Meal.ALL_SORTED, Meal.class)
+                .setParameter("userId", userId)
                 .getResultList();
     }
 
