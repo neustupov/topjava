@@ -3,11 +3,13 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
 <html>
+<jsp:include page="fragments/headTag.jsp"/>
 <head>
     <title>Calories management</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
     <h3>Meals</h3>
     <form method="post" action="meals?action=filter">
@@ -30,7 +32,10 @@
         <button type="submit">Filter</button>
     </form>
     <hr/>
-    <a href="meals?action=create">Add Meal</a>
+    <%--<a href="meals?action=create">Add Meal</a>--%>
+    <form method="POST">
+        <input type="submit" name="AddMeal" value="AddMeal" />
+    </form>
     <hr/>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
@@ -59,5 +64,6 @@
         </c:forEach>
     </table>
 </section>
+<jsp:include page="fragments/footer.jsp"/>
 </body>
 </html>
